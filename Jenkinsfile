@@ -1,8 +1,10 @@
 pipeline {
-    agent any
+      agent {
+        label 'windows'
+    }
 
     environment {
-        DOCKER_USERNAME = "moritose" 
+        DOCKER_USERNAME = "bamita" 
         
 
         IMAGE_VERSION = "1.${BUILD_NUMBER}"  
@@ -45,7 +47,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(
-                        credentialsId: 'credential-projet-id', 
+                        credentialsId: '0000', 
                         
                         usernameVariable: 'DOCKER_USER', 
                         passwordVariable: 'DOCKER_PASSWORD'
@@ -71,7 +73,7 @@ pipeline {
                         docker container rm $DOCKER_CONTAINER || true
                         // ✅ Supprime l'ancien conteneur si existant
 
-                        docker container run -d --name $DOCKER_CONTAINER -p 8080:80 $DOCKER_IMAGE
+                        docker container run -d --name $DOCKER_CONTAINER -p 8083:80 $DOCKER_IMAGE
                         // ✅ Lance le nouveau conteneur sur le port 8080
                     """
                 }
