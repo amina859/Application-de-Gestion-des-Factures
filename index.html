@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion de Factures</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <header class="my-4">
+            <h1><i class="fas fa-file-invoice-dollar"></i> Gestion de Factures</h1>
+        </header>
+
+        <div class="row">
+            <!-- Liste des factures -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5>Liste des Factures</h5>
+                        <button class="btn btn-sm btn-primary" id="newInvoiceBtn">
+                            <i class="fas fa-plus"></i> Nouvelle
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Rechercher..." id="invoiceSearch">
+                            <button class="btn btn-outline-secondary" type="button">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <div class="list-group" id="invoiceList">
+                            <!-- Les factures seront chargées ici -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gestion des données -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5>Gestion</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary" id="manageClientsBtn">
+                                <i class="fas fa-users"></i> Gérer les clients
+                            </button>
+                            <button class="btn btn-outline-primary" id="manageProductsBtn">
+                                <i class="fas fa-boxes"></i> Gérer les produits
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Détails/Édition de facture -->
+            <div class="col-md-8">
+                <div id="invoiceView" class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 id="invoiceViewTitle">Nouvelle Facture</h5>
+                        <div id="invoiceActions">
+                            <button class="btn btn-sm btn-outline-secondary me-2" id="saveDraftBtn">
+                                <i class="fas fa-save"></i> Brouillon
+                            </button>
+                            <button class="btn btn-sm btn-success me-2" id="saveInvoiceBtn">
+                                <i class="fas fa-check"></i> Enregistrer
+                            </button>
+                            <button class="btn btn-sm btn-danger" id="cancelEditBtn">
+                                <i class="fas fa-times"></i> Annuler
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Vue détaillée de la facture -->
+                        <div id="invoiceDetailView" style="display: none;">
+                            <div class="d-flex justify-content-between mb-4">
+                                <div>
+                                    <h6>Facture <span id="detailInvoiceNumber" class="badge bg-primary"></span></h6>
+                                    <div>Client: <strong id="detailClientName"></strong></div>
+                                    <div>Date: <strong id="detailInvoiceDate"></strong></div>
+                                    <div>Échéance: <strong id="detailDueDate"></strong></div>
+                                    <div>Devise: <strong id="detailCurrency">EUR</strong></div>
+                                </div>
+                                <div class="text-end">
+                                    <div>Statut: <span id="detailStatus" class="badge"></span></div>
+                                    <div>Total: <strong id="detailTotalAmount"></strong></div>
+                                    <div class="mt-2">
+                                        <button class="btn btn-sm btn-outline-primary me-2" id="editInvoiceBtn">
+                                            <i class="fas fa-edit"></i> Modifier
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary me-2" id="downloadInvoiceBtn">
+                                            <i class="fas fa-download"></i> PDF
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-success" id="sendInvoiceBtn">
+                                            <i class="fas fa-envelope"></i> Envoyer
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive mb-4">
+                                <table class="table table-bordered">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Produit</th>
+                                            <th>Prix unitaire</th>
+                                            <th>Quantité</th>
+                                            <th>TVA</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="detailItemsTable">
+                                        <!-- Items de la facture -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Notes</label>
+                                        <div class="form-control-static" id="detailNotes"></div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Conditions</label>
+                                        <div class="form-control-static" id="detailTerms"></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="border p-3">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Sous-total:</span>
+                                            <span id="detailSubtotal"></span>
+                                        </div>
+                                        <div id="detailTaxesContainer">
+                                            <!-- Taxes -->
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Remise:</span>
+                                            <span id="detailDiscount"></span>
+                                        </div>
+                                        <div class="d-flex justify-content-between fw-bold mt-2 pt-2 border-top">
+                                            <span>Total:</span>
+                                            <span id="detailTotal"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Formulaire d'édition -->
+                        <div id="invoiceEditView">
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">Client *</label>
+                                    <select class="form-select" id="invoiceClientSelect" required>
+                                        <option value="" selected disabled>Sélectionnez un client</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Date *</label>
+                                    <input type="date" class="form-control" id="invoiceDate" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Échéance *</label>
+                                    <input type="date" class="form-control" id="invoiceDueDate" required>
+                                </div>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-3">
+                                    <label class="form-label">Devise *</label>
+                                    <select class="form-select" id="invoiceCurrency" required>
+                                        <option value="EUR" selected>Euro (€)</option>
+                                        <option value="USD">Dollar ($)</option>
+                                        <option value="GBP">Livre (£)</option>
+                                        <option value="JPY">Yen (¥)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <h5 class="mb-3">Articles</h5>
+                            <div class="table-responsive mb-3">
+                                <table class="table table-bordered" id="invoiceItemsTable">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th style="width:40%">Produit *</th>
+                                            <th style="width:15%">Prix unitaire</th>
+                                            <th style="width:10%">TVA</th>
+                                            <th style="width:10%">Quantité *</th>
+                                            <th style="width:15%">Total</th>
+                                            <th style="width:10%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="invoiceItemsBody">
+                                        <!-- Les articles seront ajoutés ici -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <button class="btn btn-sm btn-outline-primary mb-4" id="addInvoiceItemBtn">
+                                <i class="fas fa-plus"></i> Ajouter un article
+                            </button>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label class="form-label">Notes</label>
+                                    <textarea class="form-control" rows="3" id="invoiceNotes" placeholder="Notes pour le client..."></textarea>
+                                    <div class="mt-2">
+                                        <label class="form-label">Conditions de paiement</label>
+                                        <textarea class="form-control" rows="2" id="invoiceTerms" placeholder="Conditions de paiement..."></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="border p-3">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Sous-total:</span>
+                                            <span id="invoiceSubtotal">0.00 €</span>
+                                        </div>
+                                        <div id="invoiceTaxesContainer">
+                                            <!-- Taxes -->
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span>Remise:</span>
+                                            <div class="input-group input-group-sm" style="width: 120px;">
+                                                <input type="number" class="form-control" id="invoiceDiscount" value="0" min="0" max="100" step="0.01">
+                                                <span class="input-group-text">%</span>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between fw-bold mt-2 pt-2 border-top">
+                                            <span>Total:</span>
+                                            <span id="invoiceTotal">0.00 €</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal d'envoi d'email -->
+    <div class="modal fade" id="emailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Envoyer la facture par email</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Email du destinataire *</label>
+                        <input type="email" class="form-control" id="recipientEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Sujet *</label>
+                        <input type="text" class="form-control" id="emailSubject" value="Votre facture" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Message</label>
+                        <textarea class="form-control" rows="4" id="emailMessage">Veuillez trouver ci-joint votre facture.</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-primary" id="sendEmailBtn">Envoyer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour la gestion des clients -->
+    <div class="modal fade" id="clientsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Gestion des clients</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Email</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientsTableBody">
+                            <!-- Clients chargés dynamiquement -->
+                        </tbody>
+                    </table>
+                    <button class="btn btn-sm btn-primary mt-3" id="addClientBtn">
+                        <i class="fas fa-plus"></i> Ajouter un client
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour la gestion des produits -->
+    <div class="modal fade" id="productsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Gestion des produits</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Prix</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <!-- Produits chargés dynamiquement -->
+                        </tbody>
+                    </table>
+                    <button class="btn btn-sm btn-primary mt-3" id="addProductBtn">
+                        <i class="fas fa-plus"></i> Ajouter un produit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Templates -->
+    <template id="invoiceItemTemplate">
+        <tr class="invoice-item">
+            <td>
+                <select class="form-select product-select" required>
+                    <option value="" selected disabled>Sélectionnez un produit</option>
+                </select>
+            </td>
+            <td>
+                <input type="number" class="form-control price-input" min="0" step="0.01" required>
+            </td>
+            <td>
+                <select class="form-select tax-select">
+                    <option value="0">0%</option>
+                    <option value="10">10%</option>
+                    <option value="20" selected>20%</option>
+                </select>
+            </td>
+            <td>
+                <input type="number" class="form-control quantity-input" min="1" value="1" required>
+            </td>
+            <td class="item-total">0.00 €</td>
+            <td class="text-center">
+                <button class="btn btn-sm btn-outline-danger remove-item-btn">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        </tr>
+    </template>
+
+    <template id="invoiceListItemTemplate">
+        <a href="#" class="list-group-item list-group-item-action invoice-list-item" data-id="">
+            <div class="d-flex w-100 justify-content-between">
+                <h6 class="mb-1 invoice-list-number">Facture #</h6>
+                <small class="invoice-list-date text-muted"></small>
+            </div>
+            <div class="d-flex justify-content-between">
+                <small class="invoice-list-client"></small>
+                <strong class="invoice-list-total"></strong>
+            </div>
+            <small>
+                Statut: <span class="badge invoice-list-status"></span>
+            </small>
+        </a>
+    </template>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

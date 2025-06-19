@@ -1,0 +1,119 @@
+body {
+    background-color: #f0f2f5;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #212529;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+    background-color: #ffffff;
+}
+
+.card-header {
+    border-bottom: 1px solid #dee2e6;
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.invoice-list-item {
+    transition: all 0.3s ease-in-out;
+    border-radius: 8px;
+    padding: 12px;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+}
+
+.invoice-list-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    background-color: #f1f3f5;
+}
+
+.badge {
+    font-weight: 600;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    border-radius: 12px;
+}
+
+.badge.bg-status-draft {
+    background-color: #adb5bd;
+}
+
+.badge.bg-status-sent {
+    background-color: #0d6efd;
+}
+
+.badge.bg-status-paid {
+    background-color: #198754;
+}
+
+.badge.bg-status-overdue {
+    background-color: #dc3545;
+}
+
+#invoiceList {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.form-control-static {
+    min-height: 40px;
+    padding: 10px 14px;
+    background-color: #e9ecef;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    font-size: 0.95rem;
+}
+
+.table th {
+    white-space: nowrap;
+    background-color: #f1f3f5;
+    font-weight: 600;
+}
+
+.invoice-item .form-select, 
+.invoice-item .form-control {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.875rem;
+    border-radius: 6px;
+}
+
+.remove-item-btn {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.75rem;
+    color: #dc3545;
+}
+
+#invoiceEditView, #invoiceDetailView {
+    transition: opacity 0.3s ease;
+}
+
+.fade-out {
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.fade-in {
+    opacity: 1;
+    height: auto;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    border-color: #86b7fe;
+}
+@media (max-width: 768px) {
+    .card-body { padding: 10px; }
+    .table-responsive { font-size: 14px; }
+}
