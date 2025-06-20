@@ -12,7 +12,7 @@ pipeline {
         DOCKER_IMAGE = "${DOCKER_USERNAME}/tp-app:${IMAGE_VERSION}" 
         
 
-        DOCKER_CONTAINER = "ci-cd-html-css-app"  
+        DOCKER_CONTAINER = "Facture_app"  
     }
 
     stages {
