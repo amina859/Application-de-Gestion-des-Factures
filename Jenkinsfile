@@ -72,7 +72,7 @@ pipeline {
                         docker container rm $DOCKER_CONTAINER || true
                         // ✅ Supprime l'ancien conteneur si existant
 
-                        docker container run -d --name $DOCKER_CONTAINER -p 8080:80 $DOCKER_IMAGE
+                        docker container run -d --name $DOCKER_CONTAINER -p 8082:80 $DOCKER_IMAGE
                         // ✅ Lance le nouveau conteneur sur le port 8080
                     """
                 }
