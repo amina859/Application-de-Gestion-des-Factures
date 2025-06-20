@@ -37,7 +37,7 @@ pipeline {
         stage("Build Docker Image") {
             steps {
                 script {
-                    sh "docker build -t $DOCKER_IMAGE ."
+                    bat "docker build -t $DOCKER_IMAGE ."
                     
                 }
             }
@@ -66,7 +66,7 @@ pipeline {
         stage("Deploy") {
             steps {
                 script {
-                    sh """
+                    bat """
                         docker container stop $DOCKER_CONTAINER || true
                         // ✅ Arrête le conteneur si déjà existant
 
