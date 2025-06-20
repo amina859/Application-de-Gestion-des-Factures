@@ -52,7 +52,7 @@ pipeline {
                         usernameVariable: 'DOCKER_USER', 
                         passwordVariable: 'DOCKER_PASSWORD'
                     )]) {
-                        sh """
+                        bat """
                             docker login -u ${DOCKER_USER} -p ${DOCKER_PASSWORD}
                             echo '✅ Docker login successful'
                             docker push $DOCKER_IMAGE
