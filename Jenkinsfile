@@ -82,7 +82,7 @@ pipeline {
 
     post {
         success {
-            mail to: 'mancabouben12@gmail.com, falilou1999@gmail.com, maimounasow1410@gmail.com, kubuyaphilemon4@gmail.com, robinyonli2@gmail.com',
+            mail to: 'moustaphasyoumarou@gmail.com, Yayamohamed209@gmail.com, mokhtaryacinabdillahi@gmail.com, tourealmamy2002@gmail.com, binetouimam@gmail.com',
                  subject: ":white_check_mark: Succès du pipeline : ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                  body: "Le pipeline a été exécuté avec succès.\nVoir les détails ici : ${env.BUILD_URL}"
         }
